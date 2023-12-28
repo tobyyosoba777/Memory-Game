@@ -1,4 +1,5 @@
 body {
+    margin: 0 auto;
     background: #333;
     margin: 0;
 }
@@ -21,4 +22,25 @@ body {
 .footer, header {
     color: #c0c0c0;
     font-family: 'Courier New', Courier, monospace;
+}
+
+@media screen and (max-width: 792px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        place-content: center;
+    }
+    .tiles {
+        margin: 30px auto;
+        width: 100%;
+        gap: 3px;
+    }
+    .tile {
+        width: 90px;
+        border: 4px solid #9c9c9c;
+        border-radius: 5px;
+    }
+    
 }

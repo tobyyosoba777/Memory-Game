@@ -3,7 +3,7 @@ const colors = ["aqua", "aquamarine", "crimson", "blue", "dodgerblue", "gold", "
 const colorsPicklist = [...colors, ...colors];
 const tileCount = colorsPicklist.length;
 
-//Game State
+// Game State
 let revealedCount = 0;
 let activeTile = null;
 let awaitingEndOfMove = false;
@@ -14,31 +14,33 @@ let timerInterval = null;
 
 function buildTile(color) {
     const element = document.createElement("div");
-    
+
     element.classList.add("tile");
     element.setAttribute("data-color", color);
-    element.setAttribute("data-revealed", "false")
+    element.setAttribute("data-revealed", "false");
 
     element.addEventListener("click", () => {
-        const revealed = element.getAttribute("data-revealed")
+        const revealed = element.getAttribute("data-revealed");
 
-        if(awaitingEndOfMove
-            || revealed === "true"
-            || element === activeTile
-            ) { 
+        if (awaitingEndOfMove || revealed === "true" || element === activeTile) {
             return;
         }
 
         element.style.backgroundColor = color;
 
-        if(!activeTile) {
+        if (!activeTile) {
             activeTile = element;
+
+            // Start the timer when the first tile is clicked
+            if (!startTime) {
+                startTime = new Date().getTime();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
 
             return;
         }
-        console.log(activeTile);
 
-        const colorToMatch = activeTile.getAttribute("data-color")
+        const colorToMatch = activeTile.getAttribute("data-color");
 
         if (colorToMatch === color) {
             activeTile.setAttribute("data-revealed", "true");
@@ -48,13 +50,17 @@ function buildTile(color) {
             activeTile = null;
             revealedCount += 2;
 
-            if(revealedCount === tileCount) {
-                alert("You win, refresh to play again.");
+            if (revealedCount === tileCount) {
+                clearInterval(timerInterval); // Stop the timer
+                const endTime = new Date().getTime();
+                const elapsedTime = (endTime - startTime) / 1000; // in seconds
+                alert(`You win! Time spent: ${elapsedTime.toFixed(2)} seconds
+                Refresh to play again`);
             }
             return;
         }
 
-        //down here
+        // Down here
         awaitingEndOfMove = true;
 
         setTimeout(() => {
@@ -63,7 +69,7 @@ function buildTile(color) {
 
             awaitingEndOfMove = false;
             activeTile = null;
-        }, 1000)
+        }, 1000);
     });
 
     return element;
@@ -75,7 +81,7 @@ function updateTimer() {
     console.log(`Elapsed Time: ${elapsedTime.toFixed(2)} seconds`);
 }
 
-//BUILD UP TILES
+// BUILD UP TILES
 for (let i = 0; i < tileCount; i++) {
     const randomIndex = Math.floor(Math.random() * colorsPicklist.length);
     const color = colorsPicklist[randomIndex];
@@ -83,6 +89,6 @@ for (let i = 0; i < tileCount; i++) {
 
     colorsPicklist.splice(randomIndex, 1);
 
-    //Solved this myself
+    // Solved this myself
     tilesContainer.appendChild(tile);
 }
